@@ -1,7 +1,7 @@
 #!/bin/python
 ### SETTINGS ###
 
-INCLUDE_DIR = "."
+INCLUDE_DIR = "./GLFW -I./KHR"
 LIBRARY_DIR = "."
 EXEC_NAME = "exec"
 BUILD_PATH = "./build"
@@ -14,7 +14,7 @@ FLAGS = ""
 
 # Libraries to link
 # e.g. -lpthreads -lglfw
-LINK_LIBRARIES = ""
+LINK_LIBRARIES = " -lglfw -lGL -lm -lX11 -lpthread -lXi -lXrandr -ldl"
 
 ###
 import os
@@ -32,7 +32,7 @@ for subdir, dirs, files in os.walk('./'):
         
         if fdata[1] == "cpp" or fdata[1] == "c":
             prefix = "" if subdir == "./" else subdir+"/"
-            makefile_src += f"{prefix+fdata[0]}.o: {prefix+fdata[0]}.{fdata[1]}\n\t{COMPILER} -c {prefix+fdata[0]}.cpp\n\n"
+            makefile_src += f"{prefix+fdata[0]}.o: {prefix+fdata[0]}.{fdata[1]}\n\t{COMPILER} -c {prefix+fdata[0]}.{prefix+fdata[1]}\n\n"
             objs += (f"{fdata[0]}.o ")
 
 
@@ -45,6 +45,7 @@ makefile_src = f"{EXEC_NAME}: {objs}\n\tmkdir -p {BUILD_PATH}\n\t\
 {COMPILER} -o {BUILD_PATH}/{EXEC_NAME}\
  -L{LIBRARY_DIR}\
  -I{INCLUDE_DIR}\
+ {LINK_LIBRARIES}\
  {FLAGS}\
  {objs}\n\n"
 
