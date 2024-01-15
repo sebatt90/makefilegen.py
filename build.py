@@ -8,6 +8,10 @@ BUILD_PATH = "./build"
 MAIN_CXX = "main"
 COMPILER = "g++"
 
+# Compiler Flags
+# e.g. -Werror
+FLAGS = ""
+
 # Libraries to link
 # e.g. -lpthreads -lglfw
 LINK_LIBRARIES = ""
@@ -27,7 +31,8 @@ for subdir, dirs, files in os.walk('./'):
             continue
         
         if fdata[1] == "cpp" or fdata[1] == "c":
-            makefile_src += f"{fdata[0]}.o: {fdata[0]}.{fdata[1]}\n\t{COMPILER} -c {fdata[0]}.cpp\n\n"
+            prefix = "" if subdir == "./" else subdir+"/"
+            makefile_src += f"{prefix+fdata[0]}.o: {prefix+fdata[0]}.{fdata[1]}\n\t{COMPILER} -c {prefix+fdata[0]}.cpp\n\n"
             objs += (f"{fdata[0]}.o ")
 
 
@@ -40,6 +45,7 @@ makefile_src = f"{EXEC_NAME}: {objs}\n\tmkdir -p {BUILD_PATH}\n\t\
 {COMPILER} -o {BUILD_PATH}/{EXEC_NAME}\
  -L{LIBRARY_DIR}\
  -I{INCLUDE_DIR}\
+ {FLAGS}\
  {objs}\n\n"
 
 makefile_src += tmp
